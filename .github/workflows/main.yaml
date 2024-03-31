@@ -86,20 +86,23 @@ jobs:
         - name: Get latest tag
           id: get_tag
           run: |
-            TAGID=$(git ls-remote --tags origin | awk '{print $2}' | grep -oP 'refs/tags/\K.*' | sort -V | tail -n 1)
-            if [ -z "$TAGID" ]; then
-              echo "No tags found, 0.1.0 will be used as the first tag"
-              TAGID="v0.1.0"
+            TAGID_LAST=$(git ls-remote --tags origin | awk '{print $2}' | grep -oP 'refs/tags/\K.*' | sort -V | tail -n 1)
+            TAGID_PREV=$(git ls-remote --tags origin | awk '{print $2}' | grep -oP 'refs/tags/\K.*' | sort -V | tail -n 2 | head -n 1)
+
+            if [ -z "$TAGID_LAST" ]; then
+                echo "No tags found, 0.1.0 will be used as the first tag"
+                TAGID_LAST="v0.1.0"
+                CHANGELOG=$(git log --pretty=format:"%h %s" $TAGID_LAST..HEAD)
+            elif [ -z "$TAGID_PREV" ]; then
+                echo "Only one tag found"
+                CHANGELOG=$(git log --pretty=format:"%h %s" $TAGID_LAST..HEAD)
             else
-              TAGID="$TAGID"
-              if git rev-parse "$TAGID" >/dev/null 2>&1; then
-                CHANGELOG=$(git log --pretty=format:"%h %s" $TAGID..HEAD)
-              else
-                echo "Tag $TAGID does not exist"
-              fi
+                echo "Two or more tags found"
+                CHANGELOG=$(git log --pretty=format:"%h %s" $TAGID_PREV..$TAGID_LAST)
             fi
-            echo "Latest tag is $TAGID"
-            echo "::set-output name=tag::${TAGID}"
+
+            echo "Latest tag is $TAGID_LAST"
+            echo "::set-output name=tag::${TAGID_LAST}"
             echo "::set-output name=changelog::${CHANGELOG}"
   
         - name: Delete existing Release if exists
