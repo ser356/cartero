@@ -3,16 +3,16 @@
 add(){
     cd src/
     mkdir -p /usr/local/bin/
-    mv cartero /usr/local/bin/
+    cp cartero /usr/local/bin/
 
     mkdir -p /usr/local/share/cartero
-    mv cartero.gresource /usr/local/share/cartero
+    cp cartero.gresource /usr/local/share/cartero
 
     mkdir -p /usr/share/applications/
-    mv es.danirod.Cartero.desktop /usr/share/applications/
+    cp es.danirod.Cartero.desktop /usr/share/applications/
 
     mkdir -p /usr/share/icons/hicolor/scalable/apps/
-    mv es.danirod.Cartero.svg /usr/share/icons/hicolor/scalable/apps/
+    cp es.danirod.Cartero.svg /usr/share/icons/hicolor/scalable/apps/
 
 }
 del(){
