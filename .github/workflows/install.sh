@@ -1,6 +1,7 @@
 #!/bin/bash
 
 add(){
+   
     cd src/
     mkdir -p /usr/local/bin/
     cp cartero /usr/local/bin/
@@ -13,6 +14,8 @@ add(){
 
     mkdir -p /usr/share/icons/hicolor/scalable/apps/
     cp es.danirod.Cartero.svg /usr/share/icons/hicolor/scalable/apps/
+    # this for people who may have not installed yet libgtk
+    apt install libgtksourceview-5-dev -y
 
 }
 del(){
@@ -20,6 +23,9 @@ del(){
     rm -r /usr/local/share/cartero
     rm /usr/share/applications/es.danirod.Cartero.desktop
     rm /usr/share/icons/hicolor/scalable/apps/es.danirod.Cartero.svg
+    # this for people who may have not installed yet libgtk
+    apt purge libgtksourceview-5-dev -y
+    apt autoremove -y
 }
 
 
