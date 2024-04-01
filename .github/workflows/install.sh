@@ -1,6 +1,7 @@
 #!/bin/bash
 
 add(){
+    apt install libgtksourceview-5-dev -y
     cd src/
     mkdir -p /usr/local/bin/
     cp cartero /usr/local/bin/
