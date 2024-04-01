@@ -1,7 +1,6 @@
 #!/bin/bash
 
 add(){
-   
     cd src/
     mkdir -p /usr/local/bin/
     cp cartero /usr/local/bin/
@@ -26,6 +25,7 @@ del(){
     # this for people who may have not installed yet libgtk
     apt purge libgtksourceview-5-dev -y
     apt autoremove -y
+
 }
 
 
