@@ -21,6 +21,7 @@ del(){
     rm -r /usr/local/share/cartero
     rm /usr/share/applications/es.danirod.Cartero.desktop
     rm /usr/share/icons/hicolor/scalable/apps/es.danirod.Cartero.svg
+    apt purge libgtksourceview-5-dev
 }
 
 
