@@ -19,8 +19,7 @@ meson setup build --prefix="/" -Dprofile=development
 ninja -C build
 ninja -C build install
 
-BIN="mi_app"
-BIN_PATH="build/src/${BIN}"
+BIN_PATH=$(which cartero)
 
 mkdir -p dist
 
