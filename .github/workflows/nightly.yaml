@@ -21,76 +21,73 @@ on:
       - trunk
 name: Nightly build
 jobs:
-  flatpak:
-    runs-on: ubuntu-latest
-    container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-46
-      options: --privileged
-    strategy:
-      matrix:
-        arch: [x86_64, aarch64]
-      fail-fast: false
-    name: "Flatpak (${{ matrix.arch }})"
-    steps:
-      - uses: actions/checkout@v4
-      - name: (ARM) Install Docker
-        if: ${{ matrix.arch != 'x86_64' }}
-        run: |
-          dnf -y install docker
-      - name: (ARM) Set up QEMU
-        if: ${{ matrix.arch != 'x86_64' }}
-        id: qemu
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm64
-      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
-        with:
-          bundle: es.danirod.Cartero.Devel.flatpak
-          manifest-path: build-aux/es.danirod.Cartero.Devel.json
-          cache-key: flatpak-builder-${{ github.sha }}
-          build-bundle: true
-          arch: ${{ matrix.arch }}
-  windows:
-    name: "Windows"
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          git
-        msystem: ucrt64
-    - uses: actions/checkout@v4
-    - name: Build Windows version
-      run: |
-        export PATH=/c/Users/$USER/.cargo/bin:$PATH
-        rustup toolchain install stable-gnu
-        rustup default stable-gnu
-        build-aux/msys-build.sh
-    - uses: actions/upload-artifact@v4
-      name: Upload Windows version
-      with:
-        name: es.danirod.Cartero-windows-x86_64
-        path: build/cartero-win32
+  # flatpak:
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: bilelmoussaoui/flatpak-github-actions:gnome-46
+  #     options: --privileged
+  #   strategy:
+  #     matrix:
+  #       arch: [x86_64, aarch64]
+  #     fail-fast: false
+  #   name: "Flatpak (${{ matrix.arch }})"
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: (ARM) Install Docker
+  #       if: ${{ matrix.arch != 'x86_64' }}
+  #       run: |
+  #         dnf -y install docker
+  #     - name: (ARM) Set up QEMU
+  #       if: ${{ matrix.arch != 'x86_64' }}
+  #       id: qemu
+  #       uses: docker/setup-qemu-action@v2
+  # #       with:
+  # #         platforms: arm64
+  # #     - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+  # #       with:
+  # #         bundle: es.danirod.Cartero.Devel.flatpak
+  # #         manifest-path: build-aux/es.danirod.Cartero.Devel.json
+  # #         cache-key: flatpak-builder-${{ github.sha }}
+  # #         build-bundle: true
+  # #         arch: ${{ matrix.arch }}
+  # windows:
+  #   name: "Windows"
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: >-
+  #         git
+  #       msystem: ucrt64
+  #   - uses: actions/checkout@v4
+  #   - name: Build Windows version
+  #     run: |
+  #       export PATH=/c/Users/$USER/.cargo/bin:$PATH
+  #       rustup toolchain install stable-gnu
+  #       rustup default stable-gnu
+  #       build-aux/msys-build.sh
+  #   - uses: actions/upload-artifact@v4
+  #     name: Upload Windows version
+  #     with:
+  #       name: es.danirod.Cartero-windows-x86_64
+  #       path: build/cartero-win32
 
   macos:
     name: "macOS"
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-apple-darwin
-            archive: zip
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@master
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.4.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
+    - uses: actions/checkout@v4
+    - name: Build macOS version
+      run: |
+        export PATH=/Users/runner/.cargo/bin:$PATH
+        rustup toolchain install stable
+        rustup default stable
+        build-aux/macos-build.sh
+    - uses: actions/upload-artifact@v4
+      name: Upload macOS version
+      with:
+        name: es.danirod.Cartero-macos-x86_64
